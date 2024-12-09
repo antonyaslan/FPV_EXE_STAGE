@@ -1,0 +1,100 @@
+module sva_checker (input wire clk,
+                    input wire reset_n,
+                    input wire [31:0] data1,
+                    input wire [31:0] data2,
+                    input wire [31:0] immediate_data,
+                    input wire [31:0] ex_mem_data,
+                    input wire [31:0] mem_wb_data,
+                    input wire control_t control_in,
+                    input wire [31:0] pc, 
+                    input wire fwd_t forward_a,
+                    input wire fwd_t forward_b, 
+                    input control_t control_out,
+		    input wire [31:0] alu_data,
+		    input wire [31:0] memory_data,
+		    input wire [31:0] pc_branch,
+		    input wire [31:0] left_operand,
+		    input wire [31:0] right_operand,
+		    input wire [31:0] right_operand_alu,
+		    input wire signed [31:0] branch_offset );
+
+//Check forwarding a
+assert_no_fwd_left_operand: assert property (@(posedge clk)
+	(forward_a == NO_FWD && control_in.encoding != U_TYPE) |-> (left_operand == data1));
+
+assert_ex_mem_fwd_left_operand: assert property (@(posedge clk)
+	(forward_a == EX_MEM_FWD && control_in.encoding != U_TYPE) |-> (left_operand == ex_mem_data));
+
+assert_mem_wb_fwd_left_operand: assert property (@(posedge clk)
+	(forward_a == MEM_WB_FWD && control_in.encoding != U_TYPE) |-> (left_operand == mem_wb_data));
+
+//Check forwarding b
+assert_no_fwd_right_operand: assert property (@(posedge clk)
+	(forward_b == NO_FWD) |-> (right_operand == data2));
+
+assert_ex_mem_fwd_right_operand: assert property (@(posedge clk)
+	(forward_b == EX_MEM_FWD) |-> (right_operand == ex_mem_data));
+
+assert_mem_wb_fwd_right_operand: assert property (@(posedge clk)
+	(forward_b == MEM_WB_FWD) |-> (right_operand == mem_wb_data));
+
+//Check alu_src
+assert_alu_src_imm: assert property (@(posedge clk)
+	(control_in.alu_src == 1) |-> (right_operand_alu == immediate_data));
+
+assert_alu_src_right_operand: assert property (@(posedge clk)
+	(control_in.alu_src == 0) |-> (right_operand_alu == right_operand));
+
+//Check control_in routing
+assert_control_in_equals_control_out: assert property (@(posedge clk)
+	(control_out == control_in));
+
+//Check if the memory data is always the right operand
+assert_memory_data_is_right_operand: assert property (@(posedge clk)
+	(memory_data == right_operand));
+
+//Check the pc_branch calculation
+assert_pc_branch_calculation: assert property (@(posedge clk)
+	(pc_branch == pc + (branch_offset*2)));
+
+//Check that left operand is always 0 when we get a U_TYPE insruction
+assert_left_operand_u_type_instruction: assert property (@(posedge clk)
+	(control_in.encoding == U_TYPE) |-> (left_operand == 0));
+
+//Check if the branch offset is always equal to the immediate data
+assert_branch_offset_equals_imm_data: assert property (@(posedge clk)
+	(branch_offset == immediate_data));
+
+//Check addition overflow
+assert_addition_overflow: assert property (@(posedge clk)
+	(control_in.alu_op == ALU_ADD) |-> !($signed(left_operand) + $signed(right_operand) > $signed(32'h7FFFFFFF)));
+
+//Check all operations
+assert_add_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_ADD) |-> (alu_data == left_operand + right_operand_alu));
+
+assert_sub_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_SUB) |-> (alu_data == left_operand - right_operand_alu));
+
+assert_and_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_AND) |-> (alu_data == left_operand & right_operand_alu));
+
+assert_or_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_OR) |-> (alu_data == left_operand | right_operand_alu));
+
+assert_xor_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_XOR) |-> (alu_data == left_operand ^ right_operand_alu));
+
+assert_slt_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_SLTU) |-> (alu_data == left_operand < right_operand_alu ? 1 : 0));
+
+assert_sll_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_SLL) |-> (alu_data == left_operand << right_operand_alu));
+
+assert_srl_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_SRL) |-> (alu_data == left_operand >> right_operand_alu));
+
+assert_sra_operation : assert property (@(posedge clk)
+	(control_in.alu_op == ALU_SRA) |-> (alu_data == left_operand >>> right_operand_alu));
+
+endmodule

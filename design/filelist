@@ -1,0 +1,3 @@
+../design/common.sv
+../design/alu.sv
+../design/execute_stage.sv

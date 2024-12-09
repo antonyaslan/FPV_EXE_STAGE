@@ -1,0 +1,25 @@
+module sva_checker (input wire clk,
+                    input wire reset_n,
+                    input wire [31:0] data1,
+                    input wire [31:0] data2,
+                    input wire [31:0] immediate_data,
+                    input wire [31:0] ex_mem_data,
+                    input wire [31:0] mem_wb_data,
+                    input wire control_t control_in,
+                    input wire [31:0] pc, 
+                    input wire fwd_t forward_a,
+                    input wire fwd_t forward_b, 
+                    input control_t control_out,
+		    input wire [31:0] alu_data,
+		    input wire [31:0] memory_data,
+		    input wire [31:0] pc_branch,
+		    input wire [31:0] left_operand,
+		    input wire [31:0] right_operand,
+		    input wire [31:0] right_operand_alu,
+		    input wire signed [31:0] branch_offset );
+
+//Check forwarding
+assert_no_fwd_left_operand: assert property (@(posedge clk)
+	(forward_a == NO_FWD) |-> (left_operand == data1));
+
+endmodule
