@@ -25,7 +25,7 @@ module alu(
             ALU_OR: temp_result = in_a | in_b;
             ALU_ADD: temp_result = in_a + in_b;
             ALU_SUB: temp_result = in_a - in_b;
-            // ALU_XOR: temp_result = in_a ^ in_b;
+            ALU_XOR: temp_result = in_a ^ in_b;
             // ALU_SLT: temp_result = signed_in_a < signed_in_b ? 1 : 0;
             // ALU_SLTU: temp_result = in_a < in_b ? 1 : 0;
             // ALU_SLL: temp_result = in_a << in_b;
@@ -43,7 +43,7 @@ always @(posedge clk) begin
 		result <= temp_result;
 	end
 	else begin
-		result <= result;
+		result <= temp_result;
 	end
 end
 

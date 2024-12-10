@@ -21,13 +21,14 @@ void performSub(uint32_t operand1, uint32_t operand2, uint32_t &result) {
   operand2_32bit = static_cast<int32_t> (operand2);
 
   result_32bit = operand1_32bit - operand2_32bit;
-    result = static_cast <uint32_t> (result_32bit);
+  result = static_cast <uint32_t> (result_32bit);
 }
-void performSatAdd(uint32_t operand1, uint32_t operand2, uint32_t &result) {
-    result = static_cast <uint64_t> (operand1) + operand2;
+
+void performXor(uint32_t operand1, uint32_t operand2, uint32_t &result) {
+  result = static_cast <uint32_t> (operand1) ^ operand2;
 }
 void performSatSub(uint32_t operand1, uint32_t operand2, uint32_t &result) {
-    result = static_cast <uint64_t> (operand1) - operand2;
+  result = static_cast <uint32_t> (operand1) - operand2;
 }
 
 // void performMultiply(uint32_t operand1, uint32_t operand2, uint32_t &result) {
@@ -46,8 +47,8 @@ switch(command) {
           break;
   case 3: performSub(operand1, operand2, result);
           break;
-	  //  case 4: performSatAdd(operand1, operand2, result);
-          //break;
+  case 4: performXor(operand1, operand2, result);
+          break;
 	  //  case 5: performSatSub(operand1, operand2, result);
           //break;
   // case 6: performMultiply(operand1, operand2, result);

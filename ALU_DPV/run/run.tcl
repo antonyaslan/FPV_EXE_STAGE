@@ -44,8 +44,8 @@ proc sim {} {
 
 proc global_assumes {} {
     map_by_name -inputs -specphase 1 -implphase 1
-    assume command_range = spec.command(1) < 3 
-    # increase the 3 above to test more functions!
+    assume command_range = spec.command(1) < 5
+    # increase the 4 above to test more functions!
 }
 
 proc ual {} {
@@ -63,7 +63,7 @@ proc ual {} {
 
     lemma alu_sub = impl.command(1) == 3 -> impl.result(3) == spec.result(1)
 
+    lemma alu_xor = impl.command(1) == 4 -> impl.result(3) == spec.result(1)
 
-#    lemma signal_equal = impl.valid(1) -> impl.signal(3)[1:0] == spec.signal(1)[1:0]
 }
 set_user_assumes_lemmas_procedure "ual"
