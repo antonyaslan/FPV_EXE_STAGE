@@ -34,21 +34,21 @@ proc make {} {
 
 proc global_assumes {} {
     map_by_name -inputs -specphase 1 -implphase 1
-    assume command_range = spec.command(1) <= 6
+    assume command_range = spec.command(1) <= 3
 #    assume multiply_size = impl.command(1) == 6
 }
 proc ual {} {
     global step
     global_assumes
     if {$step == 1} {
-	assume spec.command(1) <= 0
+	assume spec.command(1) == 0
     } elseif {$step ==2} {
-	assume spec.command(1) <= 1
+	assume spec.command(1) == 1
     } elseif {$step == 3} {
-	assume spec.command(1) <= 2
+	assume spec.command(1) == 2
 #	multiplier_properties lemma
     } elseif {$step == 4} {
-	assume spec.command(1) <= 3
+	assume spec.command(1) == 3
 #	multiplier_properties assume
     } elseif {$step == 5} {
 #	assume mult = impl.command(1) == 6 -> impl.temp_result(1) == impl.in_a(1)[15:0] * impl.in_b(1)[15:0]
@@ -88,7 +88,7 @@ proc run_solve {} {
     set proof_name alu
     if {$step == 1} {
 	#Step 1 - To prove lemma without any convergence technique
-	set_hector_case_splitting_procedure ""
+	set_hector_case_splitting_procedure "case_split"
     }
     if {$step == 2} {
 	#Step 2 - Set case split TCL procedure
@@ -96,9 +96,10 @@ proc run_solve {} {
     }
     if {$step == 3} {
 	#Step 3 - For command 6, To prove multiplier output
-	set_hector_case_splitting_procedure ""
-	set_hector_multiple_solve_scripts_list [list orch_custom_bit_operations1]
-	set proof_name ALU
+        	set_hector_case_splitting_procedure "case_split"
+#	set_hector_case_splitting_procedure ""
+#	set_hector_multiple_solve_scripts_list [list orch_custom_bit_operations1]
+#	set proof_name ALU
     }
     if {$step == 4} {
 	#Step 4 - Set case split TCL procedure
@@ -113,10 +114,17 @@ proc run_solve {} {
     # proofwait
 }
 
-proc run {step_in} {
+#proc run {step_in} {
+#    global step
+#    set step $step_in
+#    run_solve
+#}
+
+proc run {} {
     global step
-    set step $step_in
-    run_solve
+    foreach step {1 2 3 4} {
+        run_solve
+    }
 }
 
 proc hdps_ual {} {

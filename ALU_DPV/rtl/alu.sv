@@ -1,26 +1,12 @@
 import common::*;
 
-// typedef struct packed
-//     {
-//         alu_op_t alu_op;
-//         encoding_t encoding;
-//         logic alu_src;
-//         logic mem_read;
-//         logic mem_write;
-//         logic reg_write;
-//         logic mem_to_reg;
-//         logic is_branch;
-//         branch_cond_t branch_cond;
-//     } control_t;
-
-
 module alu(
     input 		clk,
     input 		reset,
     input 		valid,
-    input wire [2:0] 	command,
-    input wire [31:0] 	in_a,
-    input wire [31:0] 	in_b,
+    input [2:0] 	command,
+    input [31:0] 	in_a,
+    input [31:0] 	in_b,
     output logic [31:0] result
 );
 

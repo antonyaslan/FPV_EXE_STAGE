@@ -46,14 +46,14 @@ switch(command) {
           break;
   case 3: performSub(operand1, operand2, result);
           break;
-  case 4: performSatAdd(operand1, operand2, result);
-          break;
-  case 5: performSatSub(operand1, operand2, result);
-          break;
+	  //  case 4: performSatAdd(operand1, operand2, result);
+          //break;
+	  //  case 5: performSatSub(operand1, operand2, result);
+          //break;
   // case 6: performMultiply(operand1, operand2, result);
           // break;
 }
-return 0;
+ return 0;
 }
 
 int DPV_wrapper () {
