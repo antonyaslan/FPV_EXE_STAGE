@@ -1,6 +1,6 @@
 # run this program by in a csh shell running
 # source setup.tcl
-# vcf -f run2.tcl -gui
+# vcf -f run.tcl -gui
 # now enter the gui
 # make
 # sim
